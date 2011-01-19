@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>three.js - webgl</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+      body {
+        background: #fff;
+        padding: 0;
+        margin: 0;
+        font-weight: bold;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      #info {
+        position: absolute;
+        top: 0px; width: 100%;
+        color: #ffffff;
+        padding: 5px;
+        font-family:Monospace;
+        font-size:13px;
+        text-align:center;
+        z-index:1000;
+      }
+
+      a {
+        color: #ffffff;
+      }
+
+      canvas {
+        text-align: center;
+      }
+
+      #log {
+        position:absolute;
+        top:50px;
+        text-align:left;
+        display:block;
+        z-index:100
+      }
+
+      #controls {
+        position: absolute;
+        top: 100px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="info"><a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - webgl HDR tone mapping.</div>
+
+    <div id="controls">
+      <input id="exposure" type="range">
+    </div>
+
+    <script src="/javascripts/lib/Three.js/ThreeExtras.js"></script>
+    <script src="/javascripts/lib/Three.js/Stats.js"></script>
+   <script src="/javascripts/ShaderUtils.js"></script>
+    <script src="/javascripts/App.js"></script>
+  </body>
+</html>
