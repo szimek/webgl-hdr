@@ -6665,6 +6665,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			texture.__webGLTexture = _gl.createTexture();
 			_gl.bindTexture( _gl.TEXTURE_2D, texture.__webGLTexture );
+			_gl.pixelStorei( _gl.UNPACK_FLIP_Y_WEBGL, true );
 			_gl.texImage2D( _gl.TEXTURE_2D, 0, _gl.RGBA, _gl.RGBA, _gl.UNSIGNED_BYTE, texture.image );
 
 			_gl.texParameteri( _gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, paramThreeToGL( texture.wrap_s ) );
