@@ -10,7 +10,8 @@ vec3 decode_pnghdr(const in vec4 color) {
 }
 
 void main() {
-  vec4 color = texture2D(tPNG, vUv);
+  // Hack for Three.js - flip texture Y coordinate
+  vec4 color = texture2D(tPNG, vec2(vUv.x, 1.0 - vUv.y));
   color.xyz = decode_pnghdr(color);
   gl_FragColor = vec4(color.xyz, 1.0);
 }

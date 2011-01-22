@@ -8,8 +8,7 @@ var camera, mesh, scene, renderer;
 var imageTexture,
     hdrTexture,
     luminanceTexture,
-    bilateralTextureX, bilateralTextureY,
-    basicTexture; // TODO: remove
+    bilateralTextureX, bilateralTextureY;
 
 // Shader attributes
 var exposure = { max: 1.0, min: 0.0, step: 0.01, value: 0.2 }, kernel, blurX, blurY;
@@ -18,14 +17,16 @@ var exposure = { max: 1.0, min: 0.0, step: 0.01, value: 0.2 }, kernel, blurX, bl
 var pngDecodeMaterial,
     luminanceMaterial,
     bilateralMaterial,
-    toneMappingMaterial,
-    basicMaterial; // TODO: remove
+    toneMappingMaterial;
 
 // Extensions
 var glExtFT;
 
 init();
 
+//
+// Gauss related stuff
+//
 function gauss(x, sigma) {
     // return 1.0 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp( - (x * x) / (2.0 * sigma * sigma));
     return Math.exp( - (x * x) / (2.0 * sigma * sigma));
@@ -128,7 +129,7 @@ function init() {
         // WebGL Inspector extensions
         glExtFT = renderer.context.getExtension("GLI_frame_terminator");
 
-        ShaderUtils.load(["vs/basic", "fs/basic", "fs/png_decode", "fs/rgb2y", "vs/bilateral", "fs/bilateral", "fs/tmo/none", "fs/tmo/Durand02"], function (err, shaders) {
+        ShaderUtils.load(["vs/basic", "fs/png_decode", "fs/rgb2y", "vs/bilateral", "fs/bilateral", "fs/tmo/none", "fs/tmo/Durand02"], function (err, shaders) {
             if (err) {
                 alert("Couldn't load all shaders.");
                 return;
@@ -215,29 +216,6 @@ function init() {
                 fragment_shader: shader.fragment
             });
 
-            // HACK: remove
-            // Because each render to texture flips the result,
-            // we need one more render pass to correctly flip the result of bilateral filter
-            basicTexture = new THREE.RenderTarget(
-                image.width,
-                image.height,
-                renderTargetSettings
-            );
-
-            shader = {
-                uniforms: {
-                    tTexture: { type: "t", value: 0, texture: bilateralTextureY }
-                },
-                vertex: shaders["vs/basic"],
-                fragment: shaders["fs/basic"]
-            };
-
-            basicMaterial = new THREE.MeshShaderMaterial({
-                uniforms: shader.uniforms,
-                vertex_shader: shader.vertex,
-                fragment_shader: shader.fragment
-            });
-
             //
             // Setup stuff for tone-mapping
             //
@@ -246,8 +224,7 @@ function init() {
                 uniforms: {
                     tHDR: { type: "t", value: 0, texture: hdrTexture },
                     tLuminanceMap: { type: "t", value: 1, texture: luminanceTexture },
-                    // tBilateralMap: { type: "t", value: 2, texture: bilateralTextureY },
-                    tBilateralMap: { type: "t", value: 2, texture: basicTexture },
+                    tBilateralMap: { type: "t", value: 2, texture: bilateralTextureY },
                     fExposure: { type: "f", value: exposure.value }
                 },
                 vertex: shaders["vs/basic"],
@@ -286,10 +263,6 @@ function loop() {
     bilateralMaterial.uniforms.tLuminanceMap.texture = bilateralTextureX;
     bilateralMaterial.uniforms.uImageIncrement.value = blurY;
     renderer.render( scene, camera, bilateralTextureY );
-
-    // HACK: Flip pass
-    mesh.materials = [ basicMaterial ];
-    renderer.render( scene, camera, basicTexture );
 
     // Perform tone mapping of HDR image
     toneMappingMaterial.uniforms[ "fExposure" ].value = exposure.value;
