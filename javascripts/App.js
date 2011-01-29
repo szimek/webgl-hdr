@@ -82,15 +82,7 @@ function init() {
     }
 
     // Image file
-    imageTexture = ImageUtils.loadTexture( "images/memorial.png" );
-    imageTexture.min_filter = THREE.LinearFilter;
-    imageTexture.mag_filter = THREE.LinearFilter;
-
-    imageTexture.image.onload = function () {
-        var image = this;
-
-        image.loaded = true; // Required by Three.js
-
+    imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
         // Camera
         var halfX = image.width / 2,
             halfY = image.height / 2;
@@ -240,9 +232,11 @@ function init() {
             // Render loop
             setInterval( loop, 1000 / 60);
         });
-    };
-}
+    });
 
+    imageTexture.min_filter = THREE.LinearFilter;
+    imageTexture.mag_filter = THREE.LinearFilter;
+}
 
 function loop() {
     // Decode PNG HDR

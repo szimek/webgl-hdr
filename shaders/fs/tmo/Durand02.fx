@@ -10,9 +10,9 @@ void main(void) {
 
   vec4 color = texture2D( tHDR, vUv );
 
-  float Yavg = 0.2;
-  float Ymax = 0.5;
-  float Ymin = 0.001;
+  float Yavg = 0.25;
+  float Ymax = 150.0;
+  float Ymin = 0.0001;
 
   float Y = dot( color.rgb, luminanceVector );
   color.rgb /= Y;
@@ -20,9 +20,9 @@ void main(void) {
   float logBase = log( texture2D( tBilateralMap, vUv ).x );
   float logDetail = logY - logBase;
 
-  // float baseFactor = 5.0;
-  // float compressionFactor = baseFactor / (log(Ymax) - log(Ymin));
-  float compressionFactor = 0.3;
+  float baseFactor = 5.0;
+  float compressionFactor = baseFactor / (log(Ymax) - log(Ymin));
+  // float compressionFactor = 0.3;
 
   float outLogY = logBase * compressionFactor + logDetail;
   float outY = exp( outLogY );
