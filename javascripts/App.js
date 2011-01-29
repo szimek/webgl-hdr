@@ -1,3 +1,35 @@
+var app = {};
+
+app.Filter = function (image) {
+    var halfX = image.width / 2,
+        halfY = image.height / 2;
+    this.camera = new THREE.Camera();
+    this.camera.projectionMatrix = THREE.Matrix4.makeOrtho( -halfX, halfX, halfY, -halfY, -1, 1 );
+    this.camera.position.z = 1;
+
+    this.mesh = new THREE.Mesh( new Plane( image.width, image.height ) );
+
+    this.scene = new THREE.Scene();
+    this.scene.addObject(this.mesh);
+
+    this.renderTarget = new THREE.RenderTarget( image.width, image.height, {
+        format: THREE.RGBFormat,
+        type: THREE.FloatType,
+        wrap_s: THREE.ClampToEdgeWrapping,
+        wrap_t: THREE.ClampToEdgeWrapping,
+        min_filter: THREE.NearestFilter,
+        mag_filter: THREE.NearestFilter
+    });
+
+    this.material = null;
+
+    this.process = function(renderer) {
+        renderer.render(this.scene, this.camera, this.renderTarget);
+        return this.renderTarget;
+    };
+};
+
+
 var statsEnabled = true;
 
 var container, stats;
