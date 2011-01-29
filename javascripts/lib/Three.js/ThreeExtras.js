@@ -1186,7 +1186,7 @@ THREE.Matrix4.prototype = {
 	flatten: function() {
 
 		var flat = this.flat;
-		
+
 		flat[ 0 ] = this.n11;
 		flat[ 1 ] = this.n21;
 		flat[ 2 ] = this.n31;
@@ -1217,7 +1217,7 @@ THREE.Matrix4.prototype = {
 				  0, 1, 0, y,
 				  0, 0, 1, z,
 				  0, 0, 0, 1 );
-		 
+
 		return this;
 
 	},
@@ -1228,7 +1228,7 @@ THREE.Matrix4.prototype = {
 				  0, y, 0, 0,
 				  0, 0, z, 0,
 				  0, 0, 0, 1 );
-		
+
 		return this;
 
 	},
@@ -1267,7 +1267,7 @@ THREE.Matrix4.prototype = {
 				  s,  c, 0, 0,
 				  0,  0, 1, 0,
 				  0,  0, 0, 1 );
-		
+
 		return this;
 
 	},
@@ -1413,9 +1413,9 @@ THREE.Matrix4.makeInvert3x3 = function ( m1 ) {
 	a13 =   m[ 9 ]  * m[ 4 ] - m[ 5 ] * m[ 8 ],
 	a23 = - m[ 9 ]  * m[ 0 ] + m[ 1 ] * m[ 8 ],
 	a33 =   m[ 5 ]  * m[ 0 ] - m[ 1 ] * m[ 4 ],
-	
+
 	det = m[ 0 ]  * a11 + m[ 1 ] * a12 + m[ 2 ] * a13,
-	
+
 	idet;
 
 	// no inverse
@@ -1719,18 +1719,18 @@ THREE.Geometry.prototype = {
 
 		// create internal buffers for reuse when calling this method repeatedly
 		// (otherwise memory allocation / deallocation every frame is big resource hog)
-		
+
 		if ( this.__tmpVertices == undefined ) {
-			
+
 			this.__tmpVertices = new Array( this.vertices.length );
 			vertices = this.__tmpVertices;
-			
+
 			for ( v = 0, vl = this.vertices.length; v < vl; v ++ ) {
 
 				vertices[ v ] = new THREE.Vector3();
 
 			}
-			
+
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
 				face = this.faces[ f ];
@@ -1746,19 +1746,19 @@ THREE.Geometry.prototype = {
 				}
 
 			}
-			
+
 		} else {
-			
+
 			vertices = this.__tmpVertices;
-			
+
 			for ( v = 0, vl = this.vertices.length; v < vl; v ++ ) {
 
 				vertices[ v ].set( 0, 0, 0 );
 
 			}
-			
+
 		}
-		
+
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
@@ -2152,7 +2152,7 @@ THREE.AmbientLight = function ( hex ) {
 };
 
 THREE.AmbientLight.prototype = new THREE.Light();
-THREE.AmbientLight.prototype.constructor = THREE.AmbientLight; 
+THREE.AmbientLight.prototype.constructor = THREE.AmbientLight;
 THREE.DirectionalLight = function ( hex, intensity ) {
 
 	THREE.Light.call( this, hex );
@@ -2163,7 +2163,7 @@ THREE.DirectionalLight = function ( hex, intensity ) {
 };
 
 THREE.DirectionalLight.prototype = new THREE.Light();
-THREE.DirectionalLight.prototype.constructor = THREE.DirectionalLight; 
+THREE.DirectionalLight.prototype.constructor = THREE.DirectionalLight;
 THREE.PointLight = function ( hex, intensity ) {
 
 	THREE.Light.call( this, hex );
@@ -2174,7 +2174,7 @@ THREE.PointLight = function ( hex, intensity ) {
 };
 
 THREE.PointLight.prototype = new THREE.Light();
-THREE.PointLight.prototype.constructor = THREE.PointLight; 
+THREE.PointLight.prototype.constructor = THREE.PointLight;
 /**
  * @author mr.doob / http://mrdoob.com/
  */
@@ -2273,7 +2273,7 @@ THREE.Line = function ( geometry, materials, type ) {
 
 	this.geometry = geometry;
 	this.materials = materials instanceof Array ? materials : [ materials ];
-	
+
 	this.type = ( type != undefined ) ? type : THREE.LineStrip;
 
 };
@@ -2378,7 +2378,7 @@ THREE.LineBasicMaterial.prototype = {
  *  combine: THREE.Multiply,
  *  reflectivity: <float>,
  *  refraction_ratio: <float>,
- 
+
  *  opacity: <float>,
  *  shading: THREE.SmoothShading,
  *  blending: THREE.NormalBlending,
@@ -2476,14 +2476,14 @@ THREE.MeshBasicMaterialCounter = { value: 0 };
  * parameters = {
  *  color: <hex>,
  *  map: new THREE.Texture( <Image> ),
- 
+
  *  light_map: new THREE.Texture( <Image> ),
- 
+
  *  env_map: new THREE.TextureCube( [posx, negx, posy, negy, posz, negz] ),
  *  combine: THREE.Multiply,
  *  reflectivity: <float>,
  *  refraction_ratio: <float>,
- 
+
  *  opacity: <float>,
  *  shading: THREE.SmoothShading,
  *  blending: THREE.NormalBlending,
@@ -2500,7 +2500,7 @@ THREE.MeshLambertMaterial = function ( parameters ) {
 	this.map = null;
 
 	this.light_map = null;
-	
+
 	this.env_map = null;
 	this.combine = THREE.MultiplyOperation;
 	this.reflectivity = 1;
@@ -2523,7 +2523,7 @@ THREE.MeshLambertMaterial = function ( parameters ) {
 		if ( parameters.map !== undefined ) this.map = parameters.map;
 
 		if ( parameters.light_map !== undefined ) this.light_map = parameters.light_map;
-		
+
 		if ( parameters.env_map !== undefined ) this.env_map = parameters.env_map;
 		if ( parameters.combine !== undefined ) this.combine = parameters.combine;
 		if ( parameters.reflectivity !== undefined ) this.reflectivity  = parameters.reflectivity;
@@ -2614,7 +2614,7 @@ THREE.MeshPhongMaterial = function ( parameters ) {
 	this.specular_map = null;
 
 	this.light_map = null;
-	
+
 	this.env_map = null;
 	this.combine = THREE.MultiplyOperation;
 	this.reflectivity = 1;
@@ -2639,7 +2639,7 @@ THREE.MeshPhongMaterial = function ( parameters ) {
 		if ( parameters.shininess !== undefined ) this.shininess = parameters.shininess;
 
 		if ( parameters.light_map !== undefined ) this.light_map = parameters.light_map;
-		
+
 		if ( parameters.map !== undefined ) this.map = parameters.map;
 		if ( parameters.specular_map !== undefined ) this.specular_map = parameters.specular_map;
 
@@ -2702,7 +2702,7 @@ THREE.MeshPhongMaterialCounter = { value: 0 };
  * parameters = {
  *  opacity: <float>,
  *  blending: THREE.NormalBlending
- * } 
+ * }
  */
 
 THREE.MeshDepthMaterial = function ( parameters ) {
@@ -3090,25 +3090,25 @@ var Uniforms = {
 		return uniforms_dst;
 
 	},
-	
+
 	merge: function( uniforms ) {
-		
+
 		var u, p, tmp, merged = {};
-		
+
 		for( u = 0; u < uniforms.length; u++ ) {
-			
+
 			tmp = this.clone( uniforms[ u ] );
-			
+
 			for ( p in tmp ) {
-				
+
 				merged[ p ] = tmp[ p ];
-			
+
 			}
-			
+
 		}
-		
+
 		return merged;
-		
+
 	}
 
 };
@@ -3503,7 +3503,7 @@ THREE.Projector = function() {
 
 								_face3Count ++;
 
-								// 
+								//
 
 								_face32 = _face3Pool[ _face3Count ] = _face3Pool[ _face3Count ] || new THREE.RenderableFace3();
 
@@ -4343,7 +4343,7 @@ THREE.CanvasRenderer = function () {
 
 						}/* else if ( material.env_map.mapping == THREE.RefractionMapping ) {
 
-						
+
 
 						}*/
 
@@ -4404,7 +4404,7 @@ THREE.CanvasRenderer = function () {
 						_color.updateStyleString();
 						material.wireframe ? strokePath( _color.__styleString, material.wireframe_linewidth ) : fillPath( _color.__styleString );
 
-					} 
+					}
 
 				} else {
 
@@ -5733,7 +5733,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 					}
 
 				}
-				
+
 				if ( dirtyUvs && uv2 ) {
 
 					for ( i = 0; i < 4; i ++ ) {
@@ -5897,7 +5897,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		material.uniforms.opacity.value = material.opacity;
 		material.uniforms.map.texture = material.map;
-		
+
 		material.uniforms.light_map.texture = material.light_map;
 
 		material.uniforms.env_map.texture = material.env_map;
@@ -5972,11 +5972,11 @@ THREE.WebGLRenderer = function ( parameters ) {
 	};
 
 	this.initMaterial = function( material, lights, fog ) {
-		
+
 		if ( !material.program ) {
 
 			var u, identifiers, parameters, maxLightCount;
-			
+
 			if ( material instanceof THREE.MeshDepthMaterial ) {
 
 				setMaterialShaders( material, THREE.ShaderLib[ 'depth' ] );
@@ -6022,9 +6022,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 			cacheAttributeLocations( material.program, [ "position", "normal", "uv", "uv2", "tangent" ] );
 
 		}
-		
+
 	};
-	
+
 	this.renderBuffer = function ( camera, lights, fog, material, geometryChunk, object ) {
 
 		var program, u, identifiers, attributes, parameters, maxLightCount, linewidth, primitives;
@@ -6075,7 +6075,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			material.uniforms.mNear.value = camera.near;
 			material.uniforms.mFar.value = camera.far;
 		}
-		
+
 		setUniforms( program, material.uniforms );
 
 		attributes = program.attributes;
@@ -6646,7 +6646,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			//console.log( prefix_vertex + vertex_shader );
 
 		}
-		
+
 		//console.log( prefix_fragment + fragment_shader );
 		//console.log( prefix_vertex + vertex_shader );
 
@@ -7064,7 +7064,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 THREE.Snippets = {
 
 	// FOG
-	
+
 	fog_pars_fragment: [
 
 	"#ifdef USE_FOG",
@@ -7103,7 +7103,7 @@ THREE.Snippets = {
 	].join("\n"),
 
 	// ENVIRONMENT MAP
-	
+
 	envmap_pars_fragment: [
 
 	"#ifdef USE_ENVMAP",
@@ -7169,7 +7169,7 @@ THREE.Snippets = {
 	"#endif"
 
 	].join("\n"),
-	
+
 	// COLOR MAP
 
 	map_pars_fragment: [
@@ -7214,7 +7214,7 @@ THREE.Snippets = {
 	].join("\n"),
 
 	// LIGHT MAP
-	
+
 	lightmap_pars_fragment: [
 
 	"#ifdef USE_LIGHTMAP",
@@ -7225,7 +7225,7 @@ THREE.Snippets = {
 	"#endif"
 
 	].join("\n"),
-	
+
 	lightmap_pars_vertex: [
 
 	"#ifdef USE_LIGHTMAP",
@@ -7235,7 +7235,7 @@ THREE.Snippets = {
 	"#endif"
 
 	].join("\n"),
-	
+
 	lightmap_fragment: [
 
 	"#ifdef USE_LIGHTMAP",
@@ -7245,7 +7245,7 @@ THREE.Snippets = {
 	"#endif"
 
 	].join("\n"),
-	
+
 	lightmap_vertex: [
 
 	"#ifdef USE_LIGHTMAP",
@@ -7282,7 +7282,7 @@ THREE.Snippets = {
 	].join("\n"),
 
 	// LIGHTS
-	
+
 	lights_vertex: [
 
 	"if ( !enableLighting ) {",
@@ -7901,7 +7901,7 @@ var ImageUtils = {
 
 };
 var SceneUtils = {
-	
+
 	loadScene : function( url, callback_sync, callback_async, callback_progress ) {
 
 		var worker = new Worker( url );
@@ -7911,22 +7911,22 @@ var SceneUtils = {
 
 			var dg, dm, dd, dl, dc, df, dt,
 				g, o, m, l, p, c, t, f, tt, pp,
-				geometry, material, camera, fog, 
+				geometry, material, camera, fog,
 				texture, images,
 				materials,
-				data, loader, 
+				data, loader,
 				counter_models, counter_textures,
 				total_models, total_textures,
 				result;
 
 			data = event.data;
 			loader = new THREE.Loader();
-			
+
 			counter_models = 0;
 			counter_textures = 0;
-			
+
 			result = {
-				
+
 				scene: new THREE.Scene(),
 				geometries: {},
 				materials: {},
@@ -7935,365 +7935,365 @@ var SceneUtils = {
 				cameras: {},
 				lights: {},
 				fogs: {}
-			
+
 			};
-			
+
 			function handle_objects() {
-				
+
 				for( dd in data.objects ) {
-					
+
 					if ( !result.objects[ dd ] ) {
-						
+
 						o = data.objects[ dd ];
-						
+
 						geometry = result.geometries[ o.geometry ];
-						
+
 						if ( geometry ) {
-							
+
 							materials = [];
 							for( i = 0; i < o.materials.length; i++ ) {
-								
+
 								materials[ i ] = result.materials[ o.materials[i] ];
-								
+
 							}
-							
+
 							p = o.position;
 							r = o.rotation;
 							s = o.scale;
-							
+
 							object = new THREE.Mesh( geometry, materials );
 							object.position.set( p[0], p[1], p[2] );
 							object.rotation.set( r[0], r[1], r[2] );
 							object.scale.set( s[0], s[1], s[2] );
 							object.visible = o.visible;
-							
+
 							result.scene.addObject( object );
-							
+
 							result.objects[ dd ] = object;
-							
+
 						}
-						
+
 					}
-					
+
 				}
-				
+
 			};
-			
+
 			function handle_mesh( geo, id ) {
-				
-				result.geometries[ id ] = geo; 
+
+				result.geometries[ id ] = geo;
 				handle_objects();
-				
+
 			};
-			
+
 			function create_callback( id ) {
-				
+
 				return function( geo ) {
-					
+
 					handle_mesh( geo, id );
-					
+
 					counter_models -= 1;
-					
+
 					async_callback_gate();
-					
+
 				}
-				
+
 			};
-			
+
 			function async_callback_gate() {
-				
+
 				var progress = {
-					
+
 					total_models: total_models,
 					total_textures: total_textures,
 					loaded_models: total_models - counter_models,
 					loaded_textures: total_textures - counter_textures
-					
+
 				};
-				
+
 				callback_progress( progress, result );
-				
+
 				if( counter_models == 0 && counter_textures == 0 ) {
-					
+
 					callback_async( result );
-					
+
 				}
-				
+
 			};
-			
+
 			var callback_texture = function( images ) {
-				
+
 				counter_textures -= 1;
-				async_callback_gate();  
-				
+				async_callback_gate();
+
 			};
-			
+
 			// first go synchronous elements
-			
+
 			// cameras
-			
+
 			for( dc in data.cameras ) {
-				
+
 				c = data.cameras[ dc ];
-				
+
 				if ( c.type == "perspective" ) {
-					
+
 					camera = new THREE.Camera( c.fov, c.aspect, c.near, c.far );
-					
+
 				} else if ( c.type == "ortho" ) {
-					
+
 					camera = new THREE.Camera();
 					camera.projectionMatrix = THREE.Matrix4.makeOrtho( c.left, c.right, c.top, c.bottom, c.near, c.far );
-					
+
 				}
-				
+
 				p = c.position;
 				t = c.target;
 				camera.position.set( p[0], p[1], p[2] );
 				camera.target.position.set( t[0], t[1], t[2] );
-				
+
 				result.cameras[ dc ] = camera;
-				
+
 			}
-			
+
 			// lights
-			
+
 			for( dl in data.lights ) {
-				
+
 				l = data.lights[ dl ];
-				
+
 				if ( l.type == "directional" ) {
-				
+
 					p = l.direction;
-					
+
 					light = new THREE.DirectionalLight();
 					light.position.set( p[0], p[1], p[2] );
 					light.position.normalize();
-					
+
 				} else if ( l.type == "point" ) {
-				
+
 					p = l.position;
-					
+
 					light = new THREE.PointLight();
 					light.position.set( p[0], p[1], p[2] );
-					
+
 				}
-				
+
 				c = l.color;
 				i = l.intensity || 1;
 				light.color.setRGB( c[0] * i, c[1] * i, c[2] * i );
-				
+
 				result.scene.addLight( light );
-				
+
 				result.lights[ dl ] = light;
-				
+
 			}
-			
+
 			// fogs
-			
+
 			for( df in data.fogs ) {
-				
+
 				f = data.fogs[ df ];
-				
+
 				if ( f.type == "linear" ) {
-					
+
 					fog = new THREE.Fog( 0x000000, f.near, f.far );
-				
+
 				} else if ( f.type == "exp2" ) {
-					
+
 					fog = new THREE.FogExp2( 0x000000, f.density );
-					
+
 				}
-				
+
 				c = f.color;
 				fog.color.setRGB( c[0], c[1], c[2] );
-				
+
 				result.fogs[ df ] = fog;
-				
+
 			}
-			
+
 			// defaults
-			
+
 			if ( result.cameras && data.defaults.camera ) {
-				
+
 				result.currentCamera = result.cameras[ data.defaults.camera ];
-				
+
 			}
-			
+
 			if ( result.fogs && data.defaults.fog ) {
-			
+
 				result.scene.fog = result.fogs[ data.defaults.fog ];
-				
+
 			}
-			
+
 			c = data.defaults.bgcolor;
 			result.bgColor = new THREE.Color();
 			result.bgColor.setRGB( c[0], c[1], c[2] );
-			
+
 			result.bgColorAlpha = data.defaults.bgalpha;
 
 			// now come potentially asynchronous elements
-			
+
 			// geometries
-			
+
 			// count how many models will be loaded asynchronously
-			
+
 			for( dg in data.geometries ) {
-				
+
 				g = data.geometries[ dg ];
-				
+
 				if ( g.type == "bin_mesh" || g.type == "ascii_mesh" ) {
-					
+
 					counter_models += 1;
-					
+
 				}
-				
+
 			}
-			
+
 			total_models = counter_models;
-			
+
 			for( dg in data.geometries ) {
-				
+
 				g = data.geometries[ dg ];
-				
+
 				if ( g.type == "cube" ) {
-					
+
 					geometry = new Cube( g.width, g.height, g.depth, g.segments_width, g.segments_height, null, g.flipped, g.sides );
 					result.geometries[ dg ] = geometry;
-					
+
 				} else if ( g.type == "plane" ) {
-					
+
 					geometry = new Plane( g.width, g.height, g.segments_width, g.segments_height );
 					result.geometries[ dg ] = geometry;
-					
+
 				} else if ( g.type == "sphere" ) {
-					
+
 					geometry = new Sphere( g.radius, g.segments_width, g.segments_height );
 					result.geometries[ dg ] = geometry;
-					
+
 				} else if ( g.type == "cylinder" ) {
-					
+
 					geometry = new Cylinder( g.numSegs, g.topRad, g.botRad, g.height, g.topOffset, g.botOffset );
 					result.geometries[ dg ] = geometry;
 
 				} else if ( g.type == "torus" ) {
-					
+
 					geometry = new Torus( g.radius, g.tube, g.segmentsR, g.segmentsT );
 					result.geometries[ dg ] = geometry;
 
 				} else if ( g.type == "icosahedron" ) {
-					
+
 					geometry = new Icosahedron( g.subdivisions );
 					result.geometries[ dg ] = geometry;
-					
+
 				} else if ( g.type == "bin_mesh" ) {
-					
-					loader.loadBinary( { model: g.url, 
+
+					loader.loadBinary( { model: g.url,
 										 callback: create_callback( dg )
 										} );
-					
+
 				} else if ( g.type == "ascii_mesh" ) {
-					
-					loader.loadAscii( { model: g.url, 
+
+					loader.loadAscii( { model: g.url,
 										callback: create_callback( dg )
 										} );
-					
+
 				}
-				
+
 			}
 
 			// textures
-			
+
 			// count how many textures will be loaded asynchronously
-			
+
 			for( dt in data.textures ) {
-				
+
 				tt = data.textures[ dt ];
-				
+
 				if( tt.url instanceof Array ) {
-					
+
 					counter_textures += tt.url.length;
-					
+
 				} else {
-					
+
 					counter_textures += 1;
-					
+
 				}
-				
+
 			}
-			
+
 			total_textures = counter_textures;
-			
+
 			for( dt in data.textures ) {
-				
+
 				tt = data.textures[ dt ];
-				
+
 				if ( tt.mapping != undefined && THREE[ tt.mapping ] != undefined  ) {
-					
+
 					tt.mapping = new THREE[ tt.mapping ]();
-				
+
 				}
-				
+
 				if( tt.url instanceof Array ) {
-					
+
 					images = ImageUtils.loadArray( tt.url, callback_texture );
 					texture = new THREE.Texture( images, tt.mapping );
-					
+
 				} else {
-					
+
 					texture = ImageUtils.loadTexture( tt.url, tt.mapping, callback_texture );
-					
+
 					if ( THREE[ tt.min_filter ] != undefined )
 						texture.min_filter = THREE[ tt.min_filter ];
-					
+
 					if ( THREE[ tt.mag_filter ] != undefined )
 						texture.mag_filter = THREE[ tt.mag_filter ];
-					
+
 				}
-				
+
 				result.textures[ dt ] = texture;
-				
+
 			}
-			
+
 			// materials
-			
+
 			for( dm in data.materials ) {
-				
+
 				m = data.materials[ dm ];
-				
+
 				for( pp in m.parameters ) {
-					
+
 					if ( pp == "env_map" || pp == "map" || pp == "light_map" ) {
-						
+
 						m.parameters[ pp ] = result.textures[ m.parameters[ pp ] ];
-						
+
 					} else if ( pp == "shading" ) {
-						
+
 						m.parameters[ pp ] = ( m.parameters[ pp ] == "flat" ) ? THREE.FlatShading : THREE.SmoothShading;
-						
+
 					} else if ( pp == "combine" ) {
-						
+
 						m.parameters[ pp ] = ( m.parameters[ pp ] == "MixOperation" ) ? THREE.MixOperation : THREE.MultiplyOperation;
-						
+
 					}
-					
+
 				}
-				
+
 				material = new THREE[ m.type ]( m.parameters );
 				result.materials[ dm ] = material;
-				
+
 			}
-			
+
 			// objects ( synchronous init of procedural primitives )
-			
+
 			handle_objects();
-			
+
 			// synchronous callback
-			
+
 			callback_sync( result );
 
 		};
-		
+
 	},
 
 	addMesh: function ( scene, geometry, scale, x, y, z, rx, ry, rz, material ) {
@@ -9167,21 +9167,21 @@ var Torus = function ( radius, tube, segmentsR, segmentsT ) {
 			var x = (this.radius + this.tube*Math.cos(v))*Math.cos(u);
 			var y = (this.radius + this.tube*Math.cos(v))*Math.sin(u);
 			var z = this.tube*Math.sin(v);
-			
+
 			vert(x, y, z);
-			
+
 			temp_uv.push([i/this.segmentsT, 1 - j/this.segmentsR]);
 		}
 	}
 
-	
+
 	for (var j = 1; j <= this.segmentsR; ++j) {
 		for (var i = 1; i <= this.segmentsT; ++i) {
 			var a = (this.segmentsT + 1)*j + i;
 			var b = (this.segmentsT + 1)*j + i - 1;
 			var c = (this.segmentsT + 1)*(j - 1) + i - 1;
 			var d = (this.segmentsT + 1)*(j - 1) + i;
-			
+
 			f4(a,b,c,d);
 
 			this.uvs.push( [new THREE.UV( temp_uv[a][0], temp_uv[a][1] ),
@@ -9226,7 +9226,7 @@ var Icosahedron = function ( subdivisions ) {
 	//var temp_uv = [];
 
 	THREE.Geometry.call(this);
-	
+
 	// create 12 vertices of a Icosahedron
 	var t = (1 + Math.sqrt(5)) / 2;
 
@@ -9314,7 +9314,7 @@ var Icosahedron = function ( subdivisions ) {
 
 	function f3( a, b, c, inscope ) {
 		inscope.faces.push( new THREE.Face3( a, b, c ) );
-		
+
 		/*inscope.uvs.push( [new THREE.UV( temp_uv[a].u, temp_uv[a].v ),
 						   new THREE.UV( temp_uv[b].u, temp_uv[b].v ),
 						   new THREE.UV( temp_uv[c].u, temp_uv[c].v )
@@ -9329,18 +9329,18 @@ var Icosahedron = function ( subdivisions ) {
 		var x = (pos1.x + pos2.x) / 2;
 		var y = (pos1.y + pos2.y) / 2;
 		var z = (pos1.z + pos2.z) / 2;
-		
+
 		var i = v(x, y, z);
 		return i;
 	}
 
 	/*function getUv(x,y,z) {
-		
+
 		var u,v;
 		var px,py,pz,d;
-			
+
 		d = Math.sqrt( x*x+y*y+z*z );
-			
+
 		px = x/d;
 		py = y/d;
 		pz = z/d;
