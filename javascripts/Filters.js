@@ -1,7 +1,7 @@
 var app = {};
 
 app.Filter = function () {};
-app.Filter.prototype.setup = function (image) {
+app.Filter.prototype.setup = function (image, shader) {
     var halfX = image.width / 2,
         halfY = image.height / 2;
     this.camera = new THREE.Camera();
@@ -22,7 +22,13 @@ app.Filter.prototype.setup = function (image) {
         mag_filter: THREE.NearestFilter
     });
 
-    this.material = null;
+    this.material = new THREE.MeshShaderMaterial({
+        uniforms: shader.uniforms,
+        vertex_shader: shader.vertex,
+        fragment_shader: shader.fragment
+    });
+
+    this.mesh.materials = [this.material];
 };
 app.Filter.prototype.process = function(renderer, renderToScreen) {
     var target = renderToScreen ? undefined : this.renderTarget;
@@ -35,8 +41,6 @@ app.filters = {};
 app.filters.PNGHDRDecode = function (texture, shaders) {
     app.Filter.call(this);
 
-    this.setup(texture);
-
     var shader = {
         uniforms: {
             tPNG: { type: "t", value: 0, texture: texture }
@@ -45,21 +49,13 @@ app.filters.PNGHDRDecode = function (texture, shaders) {
         fragment: shaders["fs/png_decode"]
     };
 
-    this.material = new THREE.MeshShaderMaterial({
-        uniforms: shader.uniforms,
-        vertex_shader: shader.vertex,
-        fragment_shader: shader.fragment
-    });
-
-    this.mesh.materials = [this.material];
+    this.setup(texture, shader);
 };
 app.filters.PNGHDRDecode.prototype = new app.Filter();
 
 
 app.filters.Grayscale = function (texture, shaders) {
     app.Filter.call(this);
-
-    this.setup(texture);
 
     var shader = {
         uniforms: {
@@ -69,21 +65,13 @@ app.filters.Grayscale = function (texture, shaders) {
         fragment: shaders["fs/rgb2y"]
     };
 
-    this.material = new THREE.MeshShaderMaterial({
-        uniforms: shader.uniforms,
-        vertex_shader: shader.vertex,
-        fragment_shader: shader.fragment
-    });
-
-    this.mesh.materials = [this.material];
+    this.setup(texture, shader);
 };
 app.filters.Grayscale.prototype = new app.Filter();
 
 
 app.filters.Bilateral = function (texture, shaders) {
     app.Filter.call(this);
-
-    this.setup(texture);
 
     this.inputTexture = texture;
 
@@ -112,13 +100,7 @@ app.filters.Bilateral = function (texture, shaders) {
         fragment: shaders["fs/bilateral"]
     };
 
-    this.material = new THREE.MeshShaderMaterial({
-        uniforms: shader.uniforms,
-        vertex_shader: shader.vertex,
-        fragment_shader: shader.fragment
-    });
-
-    this.mesh.materials = [this.material];
+    this.setup(texture, shader);
 };
 app.filters.Bilateral.prototype = new app.Filter();
 app.filters.Bilateral.prototype.process = function (renderer) {
@@ -133,32 +115,50 @@ app.filters.Bilateral.prototype.process = function (renderer) {
     renderer.render( this.scene, this.camera, this.renderTarget );
 };
 
-
-app.filters.Durand02TMO = function(hdrTexture, luminanceTexture, bilateralTexture, shaders) {
+app.filters.NoneTMO = function(hdrTexture, shaders) {
     app.Filter.call(this);
-
-    this.setup(hdrTexture);
 
     var shader = {
         uniforms: {
             tHDR: { type: "t", value: 0, texture: hdrTexture },
-            tLuminanceMap: { type: "t", value: 1, texture: luminanceTexture },
-            tBilateralMap: { type: "t", value: 2, texture: bilateralTexture },
+            fExposure: { type: "f", value: 0.1 }
+        },
+        vertex: shaders["vs/basic"],
+        fragment: shaders["fs/tmo/none"]
+    };
+
+    this.setup(hdrTexture, shader);
+};
+app.filters.NoneTMO.prototype = new app.Filter();
+
+app.filters.Durand02TMO = function(hdrTexture, shaders) {
+    app.Filter.call(this);
+
+    // Filter chain
+    this.luminanceFilter = new app.filters.Grayscale(hdrTexture, shaders);
+    this.bilateralFilter = new app.filters.Bilateral(this.luminanceFilter.renderTarget, shaders);
+
+    var shader = {
+        uniforms: {
+            tHDR: { type: "t", value: 0, texture: hdrTexture },
+            tLuminanceMap: { type: "t", value: 1, texture: this.luminanceFilter.renderTarget },
+            tBilateralMap: { type: "t", value: 2, texture: this.bilateralFilter.renderTarget },
             fExposure: { type: "f", value: 0.1 }
         },
         vertex: shaders["vs/basic"],
         fragment: shaders["fs/tmo/Durand02"]
     };
 
-    this.material = new THREE.MeshShaderMaterial({
-        uniforms: shader.uniforms,
-        vertex_shader: shader.vertex,
-        fragment_shader: shader.fragment
-    });
-
-    this.mesh.materials = [this.material];
+    this.setup(hdrTexture, shader);
 };
 app.filters.Durand02TMO.prototype = new app.Filter();
+app.filters.Durand02TMO.prototype.process = function(renderer, renderToScreen) {
+    this.luminanceFilter.process(renderer);
+    this.bilateralFilter.process(renderer);
+
+    var target = renderToScreen ? undefined : this.renderTarget;
+    renderer.render(this.scene, this.camera, target);
+};
 
 //
 // Gauss related stuff

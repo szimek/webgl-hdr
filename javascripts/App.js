@@ -9,18 +9,16 @@ var imageTexture;
 // Shader attributes
 var exposure = { max: 1.0, min: 0.0, step: 0.01, value: 0.2 };
 
-// Filter
+// Filters
 var pngFilter,
-    luminanceFilter,
-    bilateralFilter,
-    durand02TMO;
+    noneTMO,
+    durand02TMO,
+    tmo;
 
 // Extensions
 var glExtFT;
 
 init();
-
-
 
 function init() {
     container = document.createElement( 'div' );
@@ -77,9 +75,10 @@ function init() {
 
             // Setup filters
             pngFilter = new app.filters.PNGHDRDecode(imageTexture, shaders);
-            luminanceFilter = new app.filters.Grayscale(pngFilter.renderTarget, shaders);
-            bilateralFilter = new app.filters.Bilateral(luminanceFilter.renderTarget, shaders);
-            durand02TMO = new app.filters.Durand02TMO(pngFilter.renderTarget, luminanceFilter.renderTarget, bilateralFilter.renderTarget, shaders);
+            noneTMO = new app.filters.NoneTMO(pngFilter.renderTarget, shaders);
+            durand02TMO = new app.filters.Durand02TMO(pngFilter.renderTarget, shaders);
+
+            tmo = durand02TMO;
 
             // Render loop
             setInterval( loop, 1000 / 60);
@@ -92,9 +91,7 @@ function init() {
 
 function loop() {
     pngFilter.process(renderer);
-    luminanceFilter.process(renderer);
-    bilateralFilter.process(renderer);
-    durand02TMO.process(renderer, true);
+    tmo.process(renderer, true);
 
     // Mark end of frame for WebGL Inspector
     if ( glExtFT ) glExtFT.frameTerminator();
