@@ -1,22 +1,21 @@
-var statsEnabled = true;
+var statsEnabled = true,
 
-var container, stats;
+    container,
+    stats,
 
-var renderer;
+    renderer,
 
-var imageTexture;
+    // Shader attributes
+    exposure = { max: 1.0, min: 0.0, step: 0.01, value: 0.2 },
 
-// Shader attributes
-var exposure = { max: 1.0, min: 0.0, step: 0.01, value: 0.2 };
-
-// Filters
-var pngFilter,
+    // Filters
+    pngFilter,
     noneTMO,
     durand02TMO,
-    tmo;
+    tmo,
 
-// Extensions
-var glExtFT;
+    // Extensions
+    glExtFT;
 
 init();
 
@@ -49,7 +48,7 @@ function init() {
     }
 
     // Image file
-    imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
+    var imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
         imageTexture.width = image.width;
         imageTexture.height = image.height;
 
