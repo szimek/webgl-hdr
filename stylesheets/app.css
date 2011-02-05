@@ -1,0 +1,40 @@
+body {
+   background: #fff;
+   padding: 0;
+   margin: 0;
+   font-weight: bold;
+   overflow: hidden;
+   text-align: center;
+}
+
+#info {
+   position: absolute;
+   top: 0px; width: 100%;
+   color: #ffffff;
+   padding: 5px;
+   font-family:Monospace;
+   font-size:13px;
+   text-align:center;
+   z-index:1000;
+}
+
+a {
+   color: #ffffff;
+}
+
+canvas {
+   text-align: center;
+}
+
+#log {
+   position:absolute;
+   top:50px;
+   text-align:left;
+   display:block;
+   z-index:100
+}
+
+#controls {
+   position: absolute;
+   top: 100px;
+}

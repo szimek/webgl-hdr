@@ -1,8 +1,7 @@
 var statsEnabled = true,
-
-    container,
     stats,
-
+    container,
+    gui,
     renderer,
 
     // Shader attributes
@@ -14,7 +13,7 @@ var statsEnabled = true,
     durand02TMO,
     tmo,
 
-    // Extensions
+    // WebGL extensions
     glExtFT;
 
 init();
@@ -38,13 +37,11 @@ function init() {
 
     // Stats
     if ( statsEnabled ) {
-
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.top = '0px';
         stats.domElement.style.zIndex = 100;
         container.appendChild( stats.domElement );
-
     }
 
     // Image file
@@ -66,6 +63,7 @@ function init() {
         // Enable 'WebGL Inspector' frame termination extension
         glExtFT = renderer.context.getExtension("GLI_frame_terminator");
 
+        // Load all required shaders
         ShaderUtils.load(["vs/basic", "fs/png_decode", "fs/rgb2y", "vs/bilateral", "fs/bilateral", "fs/tmo/none", "fs/tmo/Durand02"], function (err, shaders) {
             if (err) {
                 alert("Couldn't load all shaders.");
@@ -73,11 +71,15 @@ function init() {
             }
 
             // Setup filters
-            pngFilter = new app.filters.PNGHDRDecode(imageTexture, shaders);
-            noneTMO = new app.filters.NoneTMO(pngFilter.renderTarget, shaders);
-            durand02TMO = new app.filters.Durand02TMO(pngFilter.renderTarget, shaders);
+            pngFilter = new THREE.filters.PNGHDRDecode(imageTexture, shaders);
+            noneTMO = new THREE.filters.NoneTMO(pngFilter.renderTarget, shaders);
+            durand02TMO = new THREE.filters.Durand02TMO(pngFilter.renderTarget, shaders);
 
+            // Set current TMO
             tmo = durand02TMO;
+
+            // Decode HDR image file
+            pngFilter.process(renderer);
 
             // Render loop
             setInterval( loop, 1000 / 60);
@@ -89,7 +91,7 @@ function init() {
 }
 
 function loop() {
-    pngFilter.process(renderer);
+    // Map HDR image to LDR
     tmo.process(renderer, true);
 
     // Mark end of frame for WebGL Inspector
