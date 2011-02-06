@@ -17,8 +17,7 @@ ShaderUtils.load = function(shaders, callback) {
                 if (counter == shaders.length ) callback(null, result);
             } else {
                 callback(xhr.status);
-                callback = function() {};
-                return;
+                callback = function () {};
             }
         }
     }

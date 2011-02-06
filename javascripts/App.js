@@ -1,11 +1,11 @@
 var statsEnabled = true,
     stats,
     container,
-    gui,
     renderer,
+    gui,
 
     // Shader attributes
-    exposure = { max: 1.0, min: 0.0, step: 0.01, value: 0.2 },
+    exposure = 0.3,
 
     // Filters
     pngFilter,
@@ -22,19 +22,6 @@ function init() {
     container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    // Controls
-    window.addEventListener("DOMContentLoaded", function (event) {
-        var exposureSlider = document.getElementById("exposure");
-        exposureSlider.value = exposure.value * 100;
-        exposureSlider.max = exposure.max * 100;
-        exposureSlider.min = exposure.min * 100;
-        exposureSlider.step = exposure.step * 100;
-
-        exposureSlider.addEventListener("change", function (event) {
-            exposure.value = this.value / 100;
-        }, false);
-    }, false);
-
     // Stats
     if ( statsEnabled ) {
         stats = new Stats();
@@ -43,6 +30,11 @@ function init() {
         stats.domElement.style.zIndex = 100;
         container.appendChild( stats.domElement );
     }
+
+    // GUI
+    gui = new GUI();
+    gui.add(window, "exposure", 0, 10, 0.025).name("Exposure");
+    gui.show();
 
     // Image file
     var imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
@@ -91,6 +83,9 @@ function init() {
 }
 
 function loop() {
+    // TODO: add options param to Filter#process instead
+    tmo.material.uniforms.fExposure.value = exposure;
+
     // Map HDR image to LDR
     tmo.process(renderer, true);
 
