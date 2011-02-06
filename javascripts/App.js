@@ -1,96 +1,114 @@
-var statsEnabled = true,
-    stats,
-    container,
-    renderer,
-    gui,
+var app = (function () {
+    var module = {};
 
-    // Shader attributes
-    exposure = 0.3,
+    // Private vars
+    var stats,
+        container,
+        renderer,
+        gui,
 
-    // Filters
-    pngFilter,
-    noneTMO,
-    durand02TMO,
-    tmo,
+        // Filters
+        pngDecoder,
 
-    // WebGL extensions
-    glExtFT;
+        // TMOs
+        noneTMO,
+        durand02TMO,
 
-init();
+        // WebGL extensions
+        glExtFT;
 
-function init() {
-    container = document.createElement( 'div' );
-    document.body.appendChild( container );
+    // Private functions
+    function loop() {
+        // TODO: pass params to Filter#process instead
+        module.currentTMO.material.uniforms.fExposure.value = module.settings.exposure;
 
-    // Stats
-    if ( statsEnabled ) {
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
-        stats.domElement.style.zIndex = 100;
-        container.appendChild( stats.domElement );
+        // Map HDR image to LDR
+        module.currentTMO.process(renderer, true);
+
+        // Mark end of frame for WebGL Inspector
+        if ( glExtFT ) glExtFT.frameTerminator();
+
+        if ( module.statsEnabled ) stats.update();
     }
 
-    // GUI
-    gui = new GUI();
-    gui.add(window, "exposure", 0, 10, 0.025).name("Exposure");
-    gui.show();
+    // Public vars
+    module.statsEnables = true;
+    module.currentTMO = undefined;
 
-    // Image file
-    var imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
-        imageTexture.width = image.width;
-        imageTexture.height = image.height;
+    // TMO attributes
+    module.settings = {
+        exposure: 0.3
+    };
 
-        // Renderer
-        renderer = new THREE.WebGLRenderer( false );
-        renderer.setSize( image.width, image.height );
-        container.appendChild( renderer.domElement );
+    // Public methods
+    module.init = function () {
+        var self = this;
 
-        // Enable floating point texture extension
-        if ( !renderer.context.getExtension("OES_texture_float") ) {
-            alert("Your browser doesn't support required OES_texture_float extension.");
-            return;
+        container = document.createElement( 'div' );
+        document.body.appendChild( container );
+
+        // Stats
+        if ( this.statsEnabled ) {
+            stats = new Stats();
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.top = '0px';
+            stats.domElement.style.zIndex = 100;
+            container.appendChild( stats.domElement );
         }
 
-        // Enable 'WebGL Inspector' frame termination extension
-        glExtFT = renderer.context.getExtension("GLI_frame_terminator");
+        // GUI
+        gui = new GUI();
+        gui.add(this.settings, "exposure", 0, 10, 0.025).name("Exposure");
+        gui.show();
 
-        // Load all required shaders
-        ShaderUtils.load(["vs/basic", "fs/png_decode", "fs/rgb2y", "vs/bilateral", "fs/bilateral", "fs/tmo/none", "fs/tmo/Durand02"], function (err, shaders) {
-            if (err) {
-                alert("Couldn't load all shaders.");
+        // Load image
+        var imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
+            imageTexture.width = image.width;
+            imageTexture.height = image.height;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer( false );
+            renderer.setSize( image.width, image.height );
+            container.appendChild( renderer.domElement );
+
+            // Enable floating point texture extension
+            if ( !renderer.context.getExtension("OES_texture_float") ) {
+                alert("Your browser doesn't support required OES_texture_float extension.");
                 return;
             }
 
-            // Setup filters
-            pngFilter = new THREE.filters.PNGHDRDecode(imageTexture, shaders);
-            noneTMO = new THREE.filters.NoneTMO(pngFilter.renderTarget, shaders);
-            durand02TMO = new THREE.filters.Durand02TMO(pngFilter.renderTarget, shaders);
+            // Enable 'WebGL Inspector' frame termination extension
+            glExtFT = renderer.context.getExtension("GLI_frame_terminator");
 
-            // Set current TMO
-            tmo = durand02TMO;
+            // Load all shaders
+            ShaderUtils.load(["vs/basic", "fs/png_decode", "fs/rgb2y", "vs/bilateral", "fs/bilateral", "fs/tmo/none", "fs/tmo/Durand02"], function (err, shaders) {
+                if (err) {
+                    alert("Couldn't load all shaders.");
+                    return;
+                }
 
-            // Decode HDR image file
-            pngFilter.process(renderer);
+                // Setup filters
+                pngDecoder = new THREE.filters.PNGHDRDecode(imageTexture, shaders);
+                noneTMO = new THREE.filters.NoneTMO(pngDecoder.renderTarget, shaders);
+                durand02TMO = new THREE.filters.Durand02TMO(pngDecoder.renderTarget, shaders);
 
-            // Render loop
-            setInterval( loop, 1000 / 60);
+                // TODO: allow to switch current TMO
+                self.currentTMO = durand02TMO;
+
+                // Decode HDR image file
+                pngDecoder.process(renderer);
+
+                // Render loop
+                setInterval( loop, 1000 / 60);
+            });
         });
-    });
 
-    imageTexture.min_filter = THREE.LinearFilter;
-    imageTexture.mag_filter = THREE.LinearFilter;
-}
+        imageTexture.min_filter = THREE.LinearFilter;
+        imageTexture.mag_filter = THREE.LinearFilter;
+    };
 
-function loop() {
-    // TODO: add options param to Filter#process instead
-    tmo.material.uniforms.fExposure.value = exposure;
+    return module;
+})();
 
-    // Map HDR image to LDR
-    tmo.process(renderer, true);
-
-    // Mark end of frame for WebGL Inspector
-    if ( glExtFT ) glExtFT.frameTerminator();
-
-    if ( statsEnabled ) stats.update();
-}
+// Start the app
+app.init();
