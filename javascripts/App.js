@@ -11,8 +11,7 @@ var app = (function () {
         pngDecoder,
 
         // TMOs
-        noneTMO,
-        durand02TMO,
+        tmos = {},
 
         // WebGL extensions
         glExtFT;
@@ -22,7 +21,7 @@ var app = (function () {
         // TODO: pass params to Filter#process instead
         module.currentTMO.material.uniforms.fExposure.value = module.settings.exposure;
 
-        // Map HDR image to LDR
+        // Map HDR image to LDR and render result to screen
         module.currentTMO.process(renderer, true);
 
         // Mark end of frame for WebGL Inspector
@@ -31,18 +30,19 @@ var app = (function () {
         if ( module.statsEnabled ) stats.update();
     }
 
+
     // Public vars
-    module.statsEnables = true;
+    module.statsEnabled = true;
     module.currentTMO = undefined;
 
     // TMO attributes
     module.settings = {
-        exposure: 0.3
+        exposure: 0.2
     };
 
     // Public methods
     module.init = function () {
-        var self = this;
+        var self = this; // could just use 'module' instead
 
         container = document.createElement( 'div' );
         document.body.appendChild( container );
@@ -89,11 +89,11 @@ var app = (function () {
 
                 // Setup filters
                 pngDecoder = new THREE.filters.PNGHDRDecode(imageTexture, shaders);
-                noneTMO = new THREE.filters.NoneTMO(pngDecoder.renderTarget, shaders);
-                durand02TMO = new THREE.filters.Durand02TMO(pngDecoder.renderTarget, shaders);
+                tmos.none = new THREE.filters.NoneTMO(pngDecoder.renderTarget, shaders);
+                tmos.durand02 = new THREE.filters.Durand02TMO(pngDecoder.renderTarget, shaders);
 
                 // TODO: allow to switch current TMO
-                self.currentTMO = durand02TMO;
+                self.currentTMO = tmos.durand02;
 
                 // Decode HDR image file
                 pngDecoder.process(renderer);
@@ -107,8 +107,23 @@ var app = (function () {
         imageTexture.mag_filter = THREE.LinearFilter;
     };
 
+    module.setCurrentTMO = function (tmo) {
+        this.currentTMO = tmos[tmo];
+    };
+
     return module;
 })();
 
-// Start the app
+document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('click', function (event) {
+        var src = event.target;
+
+        // Lame '#controls button' selector check
+        if (src.nodeName === "BUTTON" && src.parentNode.id === "controls" ) {
+            var tmo = src.dataset.tmo;
+            app.setCurrentTMO(tmo);
+        }
+    }, false);
+}, false);
+
 app.init();

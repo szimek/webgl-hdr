@@ -1,6 +1,7 @@
 THREE.utils = {};
 
 // Classical inheritance using proxy function
+// (very simplifed version of Y.extend from YUI 3)
 // from Javascript Patterns by Stoyan Stefanov
 THREE.utils.extend = (function () {
     var F = function () {};
@@ -210,9 +211,7 @@ THREE.filters.Durand02TMO.prototype.process = function(renderer, renderToScreen)
 };
 
 
-//
-// Gauss related stuff
-//
+// TODO: move this stuff into some namespace
 function gauss(x, sigma) {
     // return 1.0 / (sigma * Math.sqrt(2 * Math.PI)) * Math.exp( - (x * x) / (2.0 * sigma * sigma));
     return Math.exp( - (x * x) / (2.0 * sigma * sigma));
