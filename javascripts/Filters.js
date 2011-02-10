@@ -192,7 +192,8 @@ THREE.filters.NoneTMO = function(texture, shaders) {
     var shader = {
         uniforms: {
             tHDR: { type: "t", value: 0, texture: texture },
-            fExposure: { type: "f", value: 0.1 }
+            fExposure: { type: "f", value: 0.1 },
+            fGamma: { type: "f", value: 2.2 }
         },
         vertex: shaders["vs/basic"],
         fragment: shaders["fs/tmo/none"]
@@ -203,6 +204,7 @@ THREE.filters.NoneTMO = function(texture, shaders) {
 THREE.utils.extend(THREE.filters.NoneTMO, THREE.filters.Basic);
 THREE.filters.NoneTMO.prototype.name = "none";
 
+
 THREE.filters.Durand02TMO = function(texture, shaders) {
     this.luminanceFilter = new THREE.filters.Grayscale(texture, shaders);
     this.bilateralFilter = new THREE.filters.Bilateral(this.luminanceFilter.renderTarget, shaders);
@@ -212,7 +214,8 @@ THREE.filters.Durand02TMO = function(texture, shaders) {
             tHDR: { type: "t", value: 0, texture: texture },
             tLuminanceMap: { type: "t", value: 1, texture: this.luminanceFilter.renderTarget },
             tBilateralMap: { type: "t", value: 2, texture: this.bilateralFilter.renderTarget },
-            fExposure: { type: "f", value: 0.1 }
+            fExposure: { type: "f", value: 0.1 },
+            fGamma: { type: "f", value: 2.2 }
         },
         vertex: shaders["vs/basic"],
         fragment: shaders["fs/tmo/Durand02"]

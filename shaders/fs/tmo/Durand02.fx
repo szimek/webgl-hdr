@@ -2,6 +2,7 @@ uniform sampler2D tHDR;
 uniform sampler2D tLuminanceMap;
 uniform sampler2D tBilateralMap;
 uniform float fExposure;
+uniform float fGamma;
 
 varying vec2 vUv;
 
@@ -28,5 +29,5 @@ void main(void) {
   float outY = exp( outLogY );
   color.rgb *= outY * fExposure;
 
-  gl_FragColor = vec4(pow(color.rgb, vec3(1.0/2.2)), 1.0);
+  gl_FragColor = vec4(pow(color.rgb, vec3(1.0 / fGamma)), 1.0);
 }

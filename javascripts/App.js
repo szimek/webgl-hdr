@@ -16,6 +16,7 @@ var app = (function () {
     function loop() {
         // TODO: pass params to Filter#process instead
         module.currentTMO.material.uniforms.fExposure.value = module.settings.exposure;
+        module.currentTMO.material.uniforms.fGamma.value = module.settings.gamma;
 
         // Map HDR image to LDR and render result to screen
         module.currentTMO.process(renderer, true);
@@ -40,7 +41,8 @@ var app = (function () {
 
     // TMO attributes
     module.settings = {
-        exposure: 0.2
+        exposure: 0.2,
+        gamma: 2.2
     };
 
     // Public methods
@@ -109,6 +111,7 @@ var app = (function () {
                 gui = new GUI();
                 gui.name("Settings");
                 gui.add(self.settings, "exposure", 0, 10, 0.025).name("Exposure");
+                gui.add(self.settings, "gamma", 0.1, 3, 0.1).name("Gamma");
                 gui.show();
 
                 // Render loop
