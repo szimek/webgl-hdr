@@ -5,13 +5,9 @@ var app = (function () {
     var stats,
         container,
         renderer,
-        gui,
 
         // Filters
         pngDecoder,
-
-        // TMOs
-        tmos = {},
 
         // WebGL extensions
         glExtFT;
@@ -33,7 +29,14 @@ var app = (function () {
 
     // Public vars
     module.statsEnabled = true;
-    module.currentTMO = undefined;
+    module.tmos = {};
+
+    module.__defineSetter__("currentTMOName", function (tmo) {
+        this.currentTMO = this.tmos[tmo];
+    });
+    module.__defineGetter__("currentTMOName", function () {
+        return this.currentTMO.name;
+    });
 
     // TMO attributes
     module.settings = {
@@ -55,11 +58,6 @@ var app = (function () {
             stats.domElement.style.zIndex = 100;
             container.appendChild( stats.domElement );
         }
-
-        // GUI
-        gui = new GUI();
-        gui.add(this.settings, "exposure", 0, 10, 0.025).name("Exposure");
-        gui.show();
 
         // Load image
         var imageTexture = ImageUtils.loadTexture( "images/memorial.png", new THREE.UVMapping(), function (image) {
@@ -89,14 +87,29 @@ var app = (function () {
 
                 // Setup filters
                 pngDecoder = new THREE.filters.PNGHDRDecode(imageTexture, shaders);
-                tmos.none = new THREE.filters.NoneTMO(pngDecoder.renderTarget, shaders);
-                tmos.durand02 = new THREE.filters.Durand02TMO(pngDecoder.renderTarget, shaders);
-
-                // TODO: allow to switch current TMO
-                self.currentTMO = tmos.durand02;
+                self.tmos["none"] = new THREE.filters.NoneTMO(pngDecoder.renderTarget, shaders);
+                self.tmos["Durand02"] = new THREE.filters.Durand02TMO(pngDecoder.renderTarget, shaders);
 
                 // Decode HDR image file
                 pngDecoder.process(renderer);
+
+                // Set current tone mapping operator
+                self.currentTMOName = "Durand02";
+
+                // GUI
+                var gui = new GUI();
+                var options = {};
+                Object.keys(self.tmos).forEach(function (tmo) {
+                    options[tmo] = tmo;
+                });
+                gui.name("Tone mapping operators");
+                gui.add(self, "currentTMOName").name("TMO").options(options);
+                gui.show();
+
+                gui = new GUI();
+                gui.name("Settings");
+                gui.add(self.settings, "exposure", 0, 10, 0.025).name("Exposure");
+                gui.show();
 
                 // Render loop
                 setInterval( loop, 1000 / 60);
@@ -107,23 +120,7 @@ var app = (function () {
         imageTexture.mag_filter = THREE.LinearFilter;
     };
 
-    module.setCurrentTMO = function (tmo) {
-        this.currentTMO = tmos[tmo];
-    };
-
     return module;
 })();
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('click', function (event) {
-        var src = event.target;
-
-        // Lame '#controls button' selector check
-        if (src.nodeName === "BUTTON" && src.parentNode.id === "controls" ) {
-            var tmo = src.dataset.tmo;
-            app.setCurrentTMO(tmo);
-        }
-    }, false);
-}, false);
 
 app.init();

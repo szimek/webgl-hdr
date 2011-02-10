@@ -12,10 +12,10 @@ body {
    top: 0px; width: 100%;
    color: #ffffff;
    padding: 5px;
-   font-family:Monospace;
-   font-size:13px;
-   text-align:center;
-   z-index:1000;
+   font-family: Monospace;
+   font-size: 13px;
+   text-align: center;
+   z-index: 100;
 }
 
 #header button {

@@ -29,14 +29,16 @@ THREE.filters.Basic = function (image, shader) {
     this.scene = new THREE.Scene();
     this.scene.addObject(this.mesh);
 
-    this.renderTarget = new THREE.RenderTarget( image.width, image.height, {
+    this.renderTargetSettings = {
         format: THREE.RGBFormat,
         type: THREE.FloatType,
         wrap_s: THREE.ClampToEdgeWrapping,
         wrap_t: THREE.ClampToEdgeWrapping,
         min_filter: THREE.NearestFilter,
         mag_filter: THREE.NearestFilter
-    });
+    };
+
+    this.renderTarget = new THREE.RenderTarget( image.width, image.height, this.renderTargetSettings);
 
     this.material = new THREE.MeshShaderMaterial({
         uniforms: shader.uniforms,
@@ -80,6 +82,21 @@ THREE.filters.Grayscale = function (texture, shaders) {
     this.constructor.superclass.constructor.apply(this, [texture, shader]);
 };
 THREE.utils.extend(THREE.filters.Grayscale, THREE.filters.Basic);
+
+
+// Calculates approximated average, maximum and minimum image intentsity
+THREE.filters.Luminance = function (texture, shaders) {
+    var shader = {
+        uniforms: {
+            tHDR: { type: "t", value: 0, texture: texture }
+        },
+        vertex: shaders["vs/luminance"],
+        fragment: shaders["fs/luminance"]
+    };
+
+    this.constructor.superclass.constructor.apply(this, [texture, shader]);
+};
+THREE.utils.extend(THREE.filters.Luminance, THREE.filters.Basic);
 
 
 // Gaussian filter - blurs texture
@@ -184,7 +201,7 @@ THREE.filters.NoneTMO = function(texture, shaders) {
     this.constructor.superclass.constructor.apply(this, [texture, shader]);
 };
 THREE.utils.extend(THREE.filters.NoneTMO, THREE.filters.Basic);
-
+THREE.filters.NoneTMO.prototype.name = "none";
 
 THREE.filters.Durand02TMO = function(texture, shaders) {
     this.luminanceFilter = new THREE.filters.Grayscale(texture, shaders);
@@ -209,6 +226,7 @@ THREE.filters.Durand02TMO.prototype.process = function(renderer, renderToScreen)
     this.bilateralFilter.process(renderer);
     this.constructor.superclass.process.apply(this, [renderer, renderToScreen]);
 };
+THREE.filters.Durand02TMO.prototype.name = "Durand02";
 
 
 // TODO: move this stuff into some namespace
