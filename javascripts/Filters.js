@@ -85,18 +85,18 @@ THREE.utils.extend(THREE.filters.Grayscale, THREE.filters.Basic);
 
 
 // Calculates approximated average, maximum and minimum image intentsity
-THREE.filters.Luminance = function (texture, shaders) {
-    var shader = {
-        uniforms: {
-            tHDR: { type: "t", value: 0, texture: texture }
-        },
-        vertex: shaders["vs/luminance"],
-        fragment: shaders["fs/luminance"]
-    };
+// THREE.filters.Luminance = function (texture, shaders) {
+//     var shader = {
+//         uniforms: {
+//             tHDR: { type: "t", value: 0, texture: texture }
+//         },
+//         vertex: shaders["vs/luminance"],
+//         fragment: shaders["fs/luminance"]
+//     };
 
-    this.constructor.superclass.constructor.apply(this, [texture, shader]);
-};
-THREE.utils.extend(THREE.filters.Luminance, THREE.filters.Basic);
+//     this.constructor.superclass.constructor.apply(this, [texture, shader]);
+// };
+// THREE.utils.extend(THREE.filters.Luminance, THREE.filters.Basic);
 
 
 // Gaussian filter - blurs texture
