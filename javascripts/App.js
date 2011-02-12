@@ -100,12 +100,9 @@ var app = (function () {
 
                 // GUI
                 var gui = new GUI();
-                var options = {};
-                Object.keys(self.tmos).forEach(function (tmo) {
-                    options[tmo] = tmo;
-                });
+                var options = Object.keys(self.tmos);
                 gui.name("Tone mapping operators");
-                gui.add(self, "currentTMOName").name("TMO").options(options);
+                gui.add(self, "currentTMOName").name("Selected TMO").options(options);
                 gui.show();
 
                 gui = new GUI();

@@ -18,13 +18,10 @@ THREE.filters = {};
 
 // Basic filter - does nothing
 THREE.filters.Basic = function (image, shader) {
-    var halfX = image.width / 2,
-        halfY = image.height / 2;
     this.camera = new THREE.Camera();
-    this.camera.projectionMatrix = THREE.Matrix4.makeOrtho( -halfX, halfX, halfY, -halfY, -1, 1 );
     this.camera.position.z = 1;
 
-    this.mesh = new THREE.Mesh( new Plane( image.width, image.height ) );
+    this.mesh = new THREE.Mesh( new Plane( 2, 2 ) );
 
     this.scene = new THREE.Scene();
     this.scene.addObject(this.mesh);
@@ -82,21 +79,6 @@ THREE.filters.Grayscale = function (texture, shaders) {
     this.constructor.superclass.constructor.apply(this, [texture, shader]);
 };
 THREE.utils.extend(THREE.filters.Grayscale, THREE.filters.Basic);
-
-
-// Calculates approximated average, maximum and minimum image intentsity
-// THREE.filters.Luminance = function (texture, shaders) {
-//     var shader = {
-//         uniforms: {
-//             tHDR: { type: "t", value: 0, texture: texture }
-//         },
-//         vertex: shaders["vs/luminance"],
-//         fragment: shaders["fs/luminance"]
-//     };
-
-//     this.constructor.superclass.constructor.apply(this, [texture, shader]);
-// };
-// THREE.utils.extend(THREE.filters.Luminance, THREE.filters.Basic);
 
 
 // Gaussian filter - blurs texture
@@ -230,6 +212,20 @@ THREE.filters.Durand02TMO.prototype.process = function(renderer, renderToScreen)
     this.constructor.superclass.process.apply(this, [renderer, renderToScreen]);
 };
 THREE.filters.Durand02TMO.prototype.name = "Durand02";
+
+
+// Calculates approximated average, maximum and minimum image intentsity
+// THREE.filters.Luminance = function (texture, shaders) {
+//     var shader = {
+//         uniforms: {
+//             tHDR: { type: "t", value: 0, texture: texture }
+//         },
+//         vertex: shaders["vs/luminance"],
+//         fragment: shaders["fs/luminance"]
+//     };
+//
+//     this.constructor.superclass.constructor.apply(this, [texture, shader]);
+// };
 
 
 // TODO: move this stuff into some namespace

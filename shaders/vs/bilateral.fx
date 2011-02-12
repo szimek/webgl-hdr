@@ -8,5 +8,5 @@ uniform vec2 uImageIncrement;
 void main() {
     vUvCenter = uv;
     vUv = uv - ((float(KERNEL_SIZE) - 1.0) / 2.0) * uImageIncrement;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_Position = vec4(position, 1.0);
 }
