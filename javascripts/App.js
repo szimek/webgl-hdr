@@ -1,3 +1,15 @@
+// requestAnim shim layer by Paul Irish
+window.requestAnimFrame = (function () {
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(/* function */ callback, /* DOMElement */ element){
+                window.setTimeout(callback, 1000 / 60);
+            };
+})();
+
 var app = (function () {
     var module = {};
 
@@ -13,7 +25,7 @@ var app = (function () {
         glExtFT;
 
     // Private functions
-    function loop() {
+    function render() {
         // TODO: pass params to Filter#process instead
         module.currentTMO.material.uniforms.fExposure.value = module.settings.exposure;
         module.currentTMO.material.uniforms.fGamma.value = module.settings.gamma;
@@ -25,6 +37,11 @@ var app = (function () {
         if ( glExtFT ) glExtFT.frameTerminator();
 
         if ( module.statsEnabled ) stats.update();
+    }
+
+    function loop() {
+        render();
+        requestAnimFrame( loop );
     }
 
 
@@ -39,7 +56,7 @@ var app = (function () {
         return this.currentTMO.name;
     });
 
-    // TMO attributes
+    // TMO attributes (common for all TMOs)
     module.settings = {
         exposure: 0.2,
         gamma: 2.2
@@ -95,12 +112,13 @@ var app = (function () {
                 // Decode HDR image file
                 pngDecoder.process(renderer);
 
-                // Set current tone mapping operator
+                // Set initial tone mapping operator
                 self.currentTMOName = "Durand02";
 
                 // GUI
-                var gui = new GUI();
-                var options = Object.keys(self.tmos);
+                var gui, options;
+                gui = new GUI();
+                options = Object.keys(self.tmos);
                 gui.name("Tone mapping operators");
                 gui.add(self, "currentTMOName").name("Selected TMO").options(options);
                 gui.show();
@@ -111,8 +129,8 @@ var app = (function () {
                 gui.add(self.settings, "gamma", 0.1, 3, 0.1).name("Gamma");
                 gui.show();
 
-                // Render loop
-                setInterval( loop, 1000 / 60);
+                // Start render loop
+                loop();
             });
         });
 
